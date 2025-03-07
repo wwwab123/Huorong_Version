@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最新版本信息 - 火绒安全软件</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .download-link a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .download-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>最新版本信息</h1>
+        <h2>6.0版本信息</h2>
+        <table>
+            <tbody id="version6"></tbody>
+        </table>
+        <h2>5.0版本信息</h2>
+        <table>
+            <tbody id="version5"></tbody>
+        </table>
+        <h2>其他下载</h2>
+        <table>
+            <tbody id="others"></tbody>
+        </table>
+        <span class="Tips">【温馨提示与免责声明】本站由火绒安全官方论坛爱好者建立，仅对火绒官方API和下载地址进行解析以便于查询和下载，内容与网站所有者无关，以上内容不代表网站所有者的立场和观点。</span>
+    </div>
+
+    <script>
+        async function fetchVersionInfo(url, elementId) {
+            try {
+                let response = await fetch(url);
+                let data = await response.json();
+                let tableBody = document.getElementById(elementId);
+                tableBody.innerHTML = '';
+
+                let version = data.armFilesize ? `${data.filesize} (arm: ${data.armFilesize})` : data.filesize;
+                const versionInfo = [
+                    { label: '程序版本号', value: data.version },
+                    { label: '病毒库日期', value: data.virustime },
+                    { label: '安装包大小', value: version },
+                    { label: '病毒库版本', value: data.virusVersion },
+                    { label: '创建时间', value: data.createtime }
+                ];
+                versionInfo.forEach(info => {
+                    let row = document.createElement('tr');
+                    let keyCell = document.createElement('td');
+                    keyCell.textContent = info.label;
+                    let valueCell = document.createElement('td');
+                    valueCell.textContent = info.value;
+                    row.appendChild(keyCell);
+                    row.appendChild(valueCell);
+                    tableBody.appendChild(row);
+                });
+
+                const downloadLinks = [
+                    { label: '6.0 ARM64 Download', name: `${data.arm64Name} (${data.arm64Filesize})`, url: data.arm64UrlAll },
+                    { label: '6.0 X64 Download', name: `${data.x64Name} (${data.x64Filesize})`, url: data.x64UrlAll },
+                    { label: '6.0 X86 Download', name: `${data.x86Name} (${data.x86Filesize})`, url: data.x86UrlAll },
+            
+                    { label: '5.0(All包) Download', name: data.allName, url: data.urlFull },
+                    { label: '5.0(Full包) Download', name: data.fullName, url: data.urlAll },
+                    { label: '5.0(armAll包) Download', name: data.armAllName, url: data.armUrlAll },
+                    { label: '5.0(armFull包) Download', name: data.armFullName, url: data.armUrlFull }
+                ];
+                downloadLinks.forEach(link => {
+                    if (link.name && link.url) {
+                        let row = document.createElement('tr');
+                        let keyCell = document.createElement('td');
+                        keyCell.textContent = link.label;
+                        let valueCell = document.createElement('td');
+                        let downloadLink = document.createElement('a');
+                        downloadLink.href = link.url;
+                        downloadLink.textContent = link.name;
+                        downloadLink.className = 'download-link';
+                        valueCell.appendChild(downloadLink);
+                        row.appendChild(keyCell);
+                        row.appendChild(valueCell);
+                        tableBody.appendChild(row);
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error fetching version info:', error);
+            }
+        }   
+
+        async function otherdls(elementId) {
+            const otherDownloads = [
+                { label: '火绒应用商店 Download', name: '点此下载', url: 'https://www.huorong.cn/product/download.php?pro=appstore' },
+                { label: '火绒恶性木马专杀工具 Download', name: '点此下载', url: 'https://www.huorong.cn/hrkill/download.php' }
+            ];
+            let tableBody = document.getElementById(elementId);
+            tableBody.innerHTML = '';
+            otherDownloads.forEach(link => {
+                if (link.name && link.url) {
+                    let row = document.createElement('tr');
+                    let keyCell = document.createElement('td');
+                    keyCell.textContent = link.label;
+                    let valueCell = document.createElement('td');
+                    let downloadLink = document.createElement('a');
+                    downloadLink.href = link.url;
+                    downloadLink.textContent = link.name;
+                    downloadLink.className = 'download-link';
+                    valueCell.appendChild(downloadLink);
+                    row.appendChild(keyCell);
+                    row.appendChild(valueCell);
+                    tableBody.appendChild(row);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchVersionInfo('https://www.huorong.cn/product/versionShow60.php', 'version6');
+            fetchVersionInfo('https://www.huorong.cn/versionShow.php', 'version5');
+            otherdls('others');
+        });
+    </script>
+</body>
+</html>
