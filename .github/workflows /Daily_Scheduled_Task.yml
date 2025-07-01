@@ -1,0 +1,41 @@
+name: Daily Scheduled Task
+
+on:
+  schedule:
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-and-log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fetch API data
+        run: |
+          curl -s "https://www.huorong.cn/5.0.version.json" > 5.0.version.json
+
+      - name: Get current time
+        run: |
+          echo "$(TZ='Asia/Shanghai' date '+%Y-%m-%d %H:%M:%S')" > update_time.txt
+
+      - name: Commit and push
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add 5.0.version.json
+          git add update_time.txt
+          git commit -m "Update: Execute Result"
+          git push
+
+      - name: Deploy GitHub Pages site
+        uses: actions/github-script@v6
+        with:
+          script: |
+            await github.rest.repos.requestPagesBuild({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
