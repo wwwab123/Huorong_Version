@@ -64,6 +64,7 @@
             <tbody id="version6"></tbody>
         </table>
         <h2>5.0版本信息</h2>
+        <h3 id="get_time_5"> </h3>
         <table>
             <tbody id="version5"></tbody>
         </table>
@@ -87,11 +88,15 @@
                 let tableBody = document.getElementById(elementId);
                 tableBody.innerHTML = '';
 
-                let version = data.armFilesize ? `${data.filesize} (arm: ${data.armFilesize})` : data.filesize;
+                let get_time_5 = document.getElementById('get_time_5');
+                let update_time = await fetch("update_time.txt");
+                get_time_5.innerHTML = `信息获取时间: ${await update_time.text()} (UTC+8)`;
+
+                let filesize = data.armFilesize ? `${data.filesize} (arm: ${data.armFilesize})` : data.filesize;
                 const versionInfo = [
                     { label: '程序版本号', value: data.version },
                     { label: '病毒库日期', value: data.virustime },
-                    { label: '安装包大小', value: version },
+                    { label: '安装包大小', value: filesize},
                     { label: '病毒库版本', value: data.virusVersion },
                     { label: '创建时间', value: data.createtime }
                 ];
@@ -165,7 +170,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             fetchVersionInfo('https://www.huorong.cn/product/versionShow60.php', 'version6');
-            fetchVersionInfo('https://www.huorong.cn/5.0.version.json', 'version5');
+            fetchVersionInfo('5.0.version.json', 'version5');
             otherdls('others');
         });
     </script>
