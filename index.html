@@ -67,6 +67,12 @@
         <table>
             <tbody id="version5"></tbody>
         </table>
+        <h2>旧版本下载</h2>
+        <h3>(仅供在虚拟机内学习研究使用 我们不建议您安装旧版本 由此造成的一切后果您需要自行承担)</h3>
+        <h4>5.0.74.2 (最后一个携带火绒剑的5.0版本)</h4>
+        <table>
+            <tbody id="5.0.74.2"></tbody>
+        </table>
         <h2>其他下载</h2>
         <table>
             <tbody id="others"></tbody>
@@ -166,6 +172,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             fetchVersionInfo('https://www.huorong.cn/product/versionShow60.php', 'version6');
             fetchVersionInfo('5.0.version.json', 'version5');
+            fetchVersionInfo('5.0.74.2.json', '5.0.74.2');
             otherdls('others');
         });
     </script>
